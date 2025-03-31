@@ -69,6 +69,7 @@ async def handler(event):
     """دریافت پیام کاربر و پردازش آن"""
     user_message = event.message.message
     user_id = event.sender_id
+    chat_id = event.chat_id
 
     # ارسال واکنش به پیام کاربر با ایموجی 👍
     try:
