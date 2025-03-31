@@ -12,7 +12,14 @@ bot_token = '7000850548:AAEZ1JJfZ6QhNwe8Z9qsrGzd9hHZBp_iIno'
 client = TelegramClient('bot_session', api_id, api_hash).start(bot_token=bot_token)
 
 
-session = aiohttp.ClientSession()
+async def main():
+    """اجرای ربات و مدیریت session"""
+    global session
+    session = aiohttp.ClientSession()  # مقداردهی درون تابع async
+
+    await client.start(bot_token=bot_token)  # اجرای ربات
+    print("ربات فعال است...")
+    await client.run_until_disconnected()  # اجرای نامحدود
 
 async def fetch_api(url, json_data, headers):
     """ارسال درخواست به API هوش مصنوعی"""
@@ -91,6 +98,5 @@ async def love_callback(event):
 
 
 # شروع ربات
-client.start()
-print("ربات فعال است...")
-client.run_until_disconnected()
+if __name__ == "__main__":
+    asyncio.run(main())
