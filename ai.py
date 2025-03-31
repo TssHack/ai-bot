@@ -16,7 +16,9 @@ async def fetch_api(url, json_data, headers):
     """ارسال درخواست به API هوش مصنوعی"""
     async with aiohttp.ClientSession() as session:
         async with session.post(url, json=json_data, headers=headers) as response:
-            return await response.json()
+            # دریافت محتوای پاسخ به صورت متنی
+            text_response = await response.text()
+            return text_response
 
 
 async def chat_with_ai(query, user_id):
@@ -51,7 +53,6 @@ async def start_handler(event):
         "📌 **نحوه استفاده:**\n"
         "1️⃣ پیام خود را ارسال کنید.\n"
         "2️⃣ ربات پاسخ شما را می‌دهد.\n"
-        "3️⃣ برای استفاده سریع، می‌توانید از اینلاین‌کوری هم استفاده کنید.\n\n"
         "🚀 **برای شروع، پیام خود را ارسال کنید!**"
     )
 
@@ -71,10 +72,11 @@ async def handler(event):
 
     # ارسال واکنش به پیام کاربر با ایموجی 👍
     try:
-        await client.send_message(event.chat_id, "👍", reply_to=event.message.id)
+        # ارسال واکنش به پیام دریافتی
+        await client.send_reaction(event.chat_id, event.message.id, "👍")
     except Exception as e:
         print(f"خطا در ارسال واکنش: {e}")
-
+    await client.send_typing(event.chat_id)
     # دریافت پاسخ از API هوش مصنوعی
     response_text = await chat_with_ai(user_message, user_id)
 
