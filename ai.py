@@ -81,6 +81,8 @@ async def handler(event):
                 response_text,
                 buttons=[Button.inline("🥰", b"love")]
             )
+    except Exception as e:
+        print(f"Error occurred: {e}")
 
 
 @client.on(events.CallbackQuery(data=b"love"))
