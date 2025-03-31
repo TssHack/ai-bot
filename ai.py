@@ -1,6 +1,6 @@
 import asyncio
 import aiohttp
-from telethon import TelegramClient, events
+from telethon import TelegramClient, events, Button
 from telethon.tl.types import InputBotInlineResult, InputWebDocument
 
 # مقادیر API خود را اینجا وارد کنید
@@ -39,8 +39,8 @@ async def chat_with_ai(query, user_id):
         "withoutContext": False,
         "stream": False
     }
-    response = await fetch_api(url, json_data=data, headers=headers)
-    return response.get("text", "متاسفم، پاسخ مناسبی دریافت نشد.")
+    response_text = await fetch_api(url, json_data=data, headers=headers)
+    return response_text if response_text else "متاسفم، پاسخ مناسبی دریافت نشد."
 
 
 @client.on(events.NewMessage(pattern='/start'))
@@ -71,7 +71,7 @@ async def handler(event):
 
     # ارسال واکنش به پیام کاربر با ایموجی 👍
     try:
-        await client.send_reaction(event.chat_id, event.message.id, "👍")
+        await client.send_message(event.chat_id, "👍", reply_to=event.message.id)
     except Exception as e:
         print(f"خطا در ارسال واکنش: {e}")
 
