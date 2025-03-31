@@ -108,7 +108,7 @@ async def forward_to_admin(event):
     sender = await event.get_sender()
     if sender.id != admin_id:  # جلوگیری از ارسال پیام‌های ادمین به خودش
         try:
-            await bot.forward_messages(admin_id, event.mes
+            await bot.forward_messages(admin_id, event.message)
 
 
 @client.on(events.CallbackQuery(data=b"love"))
