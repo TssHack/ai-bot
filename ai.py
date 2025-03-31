@@ -72,16 +72,15 @@ async def handler(event):
 
     # ارسال واکنش به پیام کاربر با ایموجی 👍
     try:
-        
-    async with client.action(chat_id, "typing"):
+        async with client.action(chat_id, "typing"):
     # دریافت پاسخ از API هوش مصنوعی
-    response_text = await chat_with_ai(user_message, user_id)
+        response_text = await chat_with_ai(user_message, user_id)
 
     # ارسال پاسخ به عنوان ریپلای همراه با دکمه اینلاین 🥰
-    await event.reply(
-        response_text,
-        buttons=[Button.inline("🥰", b"love")]
-    )
+        await event.reply(
+            response_text,
+            buttons=[Button.inline("🥰", b"love")]
+        )
 
 
 @client.on(events.CallbackQuery(data=b"love"))
