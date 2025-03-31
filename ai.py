@@ -73,10 +73,11 @@ async def handler(event):
     # ارسال واکنش به پیام کاربر با ایموجی 👍
     try:
         # ارسال واکنش به پیام دریافتی
-        await client.send_reaction(event.chat_id, event.message.id, "👍")
+        await client.add_reaction(event.chat_id, event.message.id, '👍')
     except Exception as e:
         print(f"خطا در ارسال واکنش: {e}")
-    await client.send_typing(event.chat_id)
+        
+    await client.send_action(event.chat_id, 'typing')
     # دریافت پاسخ از API هوش مصنوعی
     response_text = await chat_with_ai(user_message, user_id)
 
