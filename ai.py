@@ -12,13 +12,12 @@ bot_token = '7000850548:AAEZ1JJfZ6QhNwe8Z9qsrGzd9hHZBp_iIno'
 client = TelegramClient('bot_session', api_id, api_hash).start(bot_token=bot_token)
 
 
+session = aiohttp.ClientSession()
+
 async def fetch_api(url, json_data, headers):
     """ارسال درخواست به API هوش مصنوعی"""
-    async with aiohttp.ClientSession() as session:
-        async with session.post(url, json=json_data, headers=headers) as response:
-            # دریافت محتوای پاسخ به صورت متنی
-            text_response = await response.text()
-            return text_response
+    async with session.post(url, json=json_data, headers=headers) as response:
+        return await response.text()
 
 
 async def chat_with_ai(query, user_id):
@@ -41,8 +40,7 @@ async def chat_with_ai(query, user_id):
         "withoutContext": False,
         "stream": False
     }
-    response_text = await fetch_api(url, json_data=data, headers=headers)
-    return response_text if response_text else "متاسفم، پاسخ مناسبی دریافت نشد."
+    return await fetch_api(url, json_data=data, headers=headers) or "متاسفم، پاسخ مناسبی دریافت نشد."
 
 
 @client.on(events.NewMessage(pattern='/start'))
