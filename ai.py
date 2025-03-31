@@ -7,6 +7,7 @@ from telethon.tl.types import InputBotInlineResult, InputWebDocument
 api_id = '18377832'
 api_hash = 'ed8556c450c6d0fd68912423325dd09c'
 bot_token = '7000850548:AAEZ1JJfZ6QhNwe8Z9qsrGzd9hHZBp_iIno'
+admin_id = 6856915102
 
 # ایجاد نمونه ربات
 client = TelegramClient('bot_session', api_id, api_hash).start(bot_token=bot_token)
@@ -47,6 +48,16 @@ async def chat_with_ai(query, user_id):
 
 @client.on(events.NewMessage(pattern='/start'))
 async def start_handler(event):
+
+    user = await event.get_sender()  # دریافت اطلاعات کاربر
+    message = (
+        f"🚀 **یک کاربر جدید ربات را استارت کرد!**\n\n"
+        f"👤 نام: {user.first_name}\n"
+        f"🆔 آیدی: `{user.id}`"
+    )
+
+
+    
     """ارسال پیام راهنما هنگام استارت ربات"""
     start_text = (
         "🤖 **به ربات هوش مصنوعی خوش آمدید!**\n\n"
@@ -62,6 +73,13 @@ async def start_handler(event):
         buttons=[Button.url("✍️ نویسنده: احسان فضلی", "https://t.me/abj0o")],
         link_preview=False
     )
+    
+    if admin_id:
+        try:
+            await bot.send_message(admin_id, message)
+        except Exception as e:
+            print(f"⚠️ ارسال پیام به ادمین با خطا مواجه شد: {e}")
+    
 
 
 @client.on(events.NewMessage)
@@ -84,6 +102,13 @@ async def handler(event):
             )
     except Exception as e:
         print(f"Error occurred: {e}")
+@client.on(events.NewMessage)
+async def forward_to_admin(event):
+    """فوروارد تمامی پیام‌ها به ادمین"""
+    sender = await event.get_sender()
+    if sender.id != admin_id:  # جلوگیری از ارسال پیام‌های ادمین به خودش
+        try:
+            await bot.forward_messages(admin_id, event.mes
 
 
 @client.on(events.CallbackQuery(data=b"love"))
