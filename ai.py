@@ -12,16 +12,14 @@ bot_token = '7000850548:AAEZ1JJfZ6QhNwe8Z9qsrGzd9hHZBp_iIno'
 client = TelegramClient('bot_session', api_id, api_hash).start(bot_token=bot_token)
 
 
-session = aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=0), 
-                                timeout=aiohttp.ClientTimeout(total=10))
-
-async def fetch_api(url, json_data, headers):
-    """ارسال درخواست سریع به API هوش مصنوعی"""
-    async with session.post(url, json=json_data, headers=headers) as response:
-        return await response.text()
+async with aiohttp.ClientSession() as session:
+        async with session.post(url, json=json_data, headers=headers) as response:
+            # دریافت محتوای پاسخ به صورت متنی
+            text_response = await response.text()
+            return text_response
 
 async def chat_with_ai(query, user_id):
-    """ارسال پیام کاربر به API و دریافت پاسخ سریع"""
+    """ارسال پیام کاربر به API و دریافت پاسخ"""
     url = "https://api.binjie.fun/api/generateStream"
     headers = {
         "authority": "api.binjie.fun",
@@ -30,8 +28,7 @@ async def chat_with_ai(query, user_id):
         "origin": "https://chat18.aichatos.xyz",
         "referer": "https://chat18.aichatos.xyz/",
         "user-agent": "Mozilla/5.0 (Windows NT 6.3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
-        "Content-Type": "application/json",
-        "Accept-Encoding": "gzip"  # فعال‌سازی فشرده‌سازی
+        "Content-Type": "application/json"
     }
     data = {
         "prompt": query,
