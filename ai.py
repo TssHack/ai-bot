@@ -52,10 +52,15 @@ async def start_handler(event):
         "1️⃣ پیام خود را ارسال کنید.\n"
         "2️⃣ ربات پاسخ شما را می‌دهد.\n"
         "3️⃣ برای استفاده سریع، می‌توانید از اینلاین‌کوری هم استفاده کنید.\n\n"
-        "✍️ **نویسنده:** [احسان فضلی](https://t.me/Ehsan_Fazli)\n"
         "🚀 **برای شروع، پیام خود را ارسال کنید!**"
     )
-    await event.reply(start_text, link_preview=False)
+
+    # ارسال پیام با دکمه اینلاین
+    await event.reply(
+        start_text,
+        buttons=[Button.url("✍️ نویسنده: احسان فضلی", "https://t.me/abj0o")],
+        link_preview=False
+    )
 
 
 @client.on(events.NewMessage)
@@ -64,50 +69,26 @@ async def handler(event):
     user_message = event.message.message
     user_id = event.sender_id
 
-    # واکنش به پیام کاربر با ایموجی 👍
-    await event.message.react('👍')
+    # ارسال واکنش به پیام کاربر با ایموجی 👍
+    try:
+        await client.send_reaction(event.chat_id, event.message.id, "👍")
+    except Exception as e:
+        print(f"خطا در ارسال واکنش: {e}")
 
     # دریافت پاسخ از API هوش مصنوعی
     response_text = await chat_with_ai(user_message, user_id)
 
-    # ارسال پاسخ به عنوان ریپلای
-    await event.reply(response_text)
+    # ارسال پاسخ به عنوان ریپلای همراه با دکمه اینلاین 🥰
+    await event.reply(
+        response_text,
+        buttons=[Button.inline("🥰", b"love")]
+    )
 
 
-@client.on(events.InlineQuery)
-async def inline_query_handler(event):
-    """پاسخ به اینلاین‌کوری‌ها"""
-    query = event.text.strip()
-
-    if not query:
-        results = [
-            InputBotInlineResult(
-                id="1",
-                type="article",
-                title="🧠 هوش مصنوعی",
-                description="یک پیام بفرستید تا پاسخ بگیرید!",
-                thumb=InputWebDocument(
-                    url="https://upload.wikimedia.org/wikipedia/commons/6/6f/Artificial_Intelligence_%26_AI_%26_Machine_Learning_-_30212411048.jpg",
-                    size=1024,
-                    mime_type="image/jpeg",
-                    attributes=[]
-                ),
-                text="🤖 برای دریافت پاسخ، یک پیام ارسال کنید."
-            )
-        ]
-    else:
-        response_text = await chat_with_ai(query, event.sender_id)
-        results = [
-            InputBotInlineResult(
-                id="2",
-                type="article",
-                title="📩 پاسخ دریافت شد!",
-                description=response_text[:50] + "..." if len(response_text) > 50 else response_text,
-                text=response_text
-            )
-        ]
-
-    await event.answer(results, cache_time=0)
+@client.on(events.CallbackQuery(data=b"love"))
+async def love_callback(event):
+    """پاسخ به کلیک روی دکمه 🥰"""
+    await event.answer("❤️ ممنون از من استفاده می کنید امید وار کمک رسان خوبی به شما باشم !", alert=True)
 
 
 # شروع ربات
