@@ -2,7 +2,7 @@ const { Telegraf, Markup } = require("telegraf");
 const axios = require("axios");
 
 // مقادیر API خود را اینجا وارد کنید
-const botToken = "7000850548:AAEZ1JJfZ6QhNwe8Z9qsrGzd9hHZBp_iIno";
+const botToken = "7000850548:AAFzCEoDuj-nmfORpW-7dXUxJQFexOltYdg";
 const adminId = 6856915102;
 
 const bot = new Telegraf(botToken);
