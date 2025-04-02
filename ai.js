@@ -113,7 +113,7 @@ app.post(`/webhook/${botToken}`, async (req, res) => {
 });
 
 // پیکربندی Webhook
-bot.telegram.setWebhook(`https://<your-vercel-url>/api/bot/webhook/${botToken}`);
+bot.telegram.setWebhook(`https://ai-ehsan.vercel.app/api/bot/webhook/${botToken}`);
 
 // اجرای سرور
 app.listen(3000, () => {
