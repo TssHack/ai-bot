@@ -1,11 +1,18 @@
+const express = require("express");
 const { Telegraf, Markup } = require("telegraf");
 const axios = require("axios");
+const bodyParser = require("body-parser");
+
+const app = express();
 
 // مقادیر API خود را اینجا وارد کنید
-const botToken = "7000850548:AAHm8y3bG6LGm0l1agzXfhpyR4gDGceB5NI";
+const botToken = "7000850548:AAEZ1JJfZ6QhNwe8Z9qsrGzd9hHZBp_iIno";
 const adminId = 6856915102;
 
 const bot = new Telegraf(botToken);
+
+// Middleware برای پردازش داده‌های JSON
+app.use(bodyParser.json());
 
 // تابع ارسال درخواست به API هوش مصنوعی
 async function chatWithAI(query, userId) {
@@ -38,7 +45,7 @@ async function chatWithAI(query, userId) {
   }
 }
 
-// رویداد `/start`
+// رویداد /start
 bot.start(async (ctx) => {
   const user = ctx.from;
   const startText = `🤖 **به ربات هوش مصنوعی خوش آمدید!**\n\n`
@@ -88,22 +95,27 @@ bot.on("text", async (ctx) => {
   }
 });
 
-// فوروارد پیام‌های کاربران به ادمین
-bot.on("message", async (ctx) => {
-  if (ctx.from.id !== adminId) {
-    try {
-      await ctx.forwardMessage(adminId);
-    } catch (error) {
-      console.error("⚠️ خطا در فوروارد پیام:", error);
-    }
-  }
-});
-
 // پاسخ به کلیک روی دکمه 🥰
 bot.action("love", async (ctx) => {
   await ctx.answerCbQuery("❤️ ممنون از من استفاده می‌کنید، امیدوارم کمک‌رسان خوبی باشم!", { show_alert: true });
 });
 
-// اجرای ربات
-bot.launch();
-console.log("✅ ربات فعال شد...");
+// Webhook handler
+app.post(`/webhook/${botToken}`, async (req, res) => {
+  const update = req.body;
+  try {
+    await bot.handleUpdate(update);
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("خطا در پردازش Webhook:", error);
+    res.sendStatus(500);
+  }
+});
+
+// پیکربندی Webhook
+bot.telegram.setWebhook(`https://<your-vercel-url>/api/bot/webhook/${botToken}`);
+
+// اجرای سرور
+app.listen(3000, () => {
+  console.log("✅ ربات در حال اجرا است...");
+});
