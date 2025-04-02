@@ -1,0 +1,20 @@
+{
+  "name": "telegram-bot",
+  "version": "1.0.0",
+  "description": "A Telegram bot using Telegraf and Express for Vercel deployment",
+  "main": "api/bot.js",
+  "scripts": {
+    "start": "node api/bot.js"
+  },
+  "dependencies": {
+    "axios": "^1.0.0",
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "telegraf": "^4.7.0"
+  },
+  "engines": {
+    "node": "16.x"
+  },
+  "author": "Ehsan Fazli",
+  "license": "MIT"
+}
