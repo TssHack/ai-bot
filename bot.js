@@ -1,2 +1,2 @@
-const app = require("../ai");
+const app = require("./ai");
 module.exports = app;
