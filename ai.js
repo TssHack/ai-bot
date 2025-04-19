@@ -100,21 +100,6 @@ bot.action("love", async (ctx) => {
   await ctx.answerCbQuery("❤️ ممنون از من استفاده می‌کنید، امیدوارم کمک‌رسان خوبی باشم!", { show_alert: true });
 });
 
-// Webhook handler
-app.post(`/webhook/${botToken}`, async (req, res) => {
-  const update = req.body;
-  try {
-    await bot.handleUpdate(update);
-    res.sendStatus(200);
-  } catch (error) {
-    console.error("خطا در پردازش Webhook:", error);
-    res.sendStatus(500);
-  }
-});
-
-// پیکربندی Webhook
-bot.telegram.setWebhook(`https://ai-ehsan.vercel.app/api/bot/webhook/${botToken}`);
-
 // اجرای سرور
 app.listen(3000, () => {
   console.log("✅ ربات در حال اجرا است...");
