@@ -4,17 +4,21 @@ const axios = require("axios");
 const bodyParser = require("body-parser");
 
 const app = express();
+app.use(bodyParser.json());
 
-// مقادیر API خود را اینجا وارد کنید
+// مقادیر خود را جایگزین کنید
 const botToken = "7000850548:AAH5oF7R6AYdDp5RJCaPiK2-bx5EwygoaG4";
 const adminId = 6856915102;
 
 const bot = new Telegraf(botToken);
 
-// Middleware برای پردازش داده‌های JSON
-app.use(bodyParser.json());
+// Webhook endpoint
+app.use(bot.webhookCallback("/bot"));
 
-// تابع ارسال درخواست به API هوش مصنوعی
+// تنظیم وبهوک (تنها در اولین اجرای deploy روی Vercel یا به‌صورت دستی با curl)
+bot.telegram.setWebhook("https://ai-bot-ehsan.vercel.app/bot");
+
+// تابع تماس با API هوش مصنوعی
 async function chatWithAI(query, userId) {
   try {
     const url = "https://api.binjie.fun/api/generateStream";
@@ -24,7 +28,7 @@ async function chatWithAI(query, userId) {
       "accept-language": "en-US,en;q=0.9",
       "origin": "https://chat18.aichatos.xyz",
       "referer": "https://chat18.aichatos.xyz/",
-      "user-agent": "Mozilla/5.0 (Windows NT 6.3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+      "user-agent": "Mozilla/5.0",
       "Content-Type": "application/json"
     };
 
@@ -45,7 +49,7 @@ async function chatWithAI(query, userId) {
   }
 }
 
-// رویداد /start
+// /start command
 bot.start(async (ctx) => {
   const user = ctx.from;
   const startText = `🤖 **به ربات هوش مصنوعی خوش آمدید!**\n\n`
@@ -61,7 +65,6 @@ bot.start(async (ctx) => {
     ])
   });
 
-  // ارسال پیام به ادمین
   const adminMessage = `🚀 **یک کاربر جدید ربات را استارت کرد!**\n\n`
     + `👤 نام: ${user.first_name}\n`
     + `🆔 آیدی: \`${user.id}\``;
@@ -75,16 +78,14 @@ bot.start(async (ctx) => {
   }
 });
 
-// هندل پیام‌های ورودی
+// هندل پیام‌ها
 bot.on("text", async (ctx) => {
   const userMessage = ctx.message.text;
   const userId = ctx.from.id;
-  const chatId = ctx.chat.id;
 
   try {
     await ctx.sendChatAction("typing");
     const responseText = await chatWithAI(userMessage, userId);
-
     await ctx.reply(responseText, {
       ...Markup.inlineKeyboard([
         Markup.button.callback("🥰", "love"),
@@ -95,12 +96,9 @@ bot.on("text", async (ctx) => {
   }
 });
 
-// پاسخ به کلیک روی دکمه 🥰
+// پاسخ به دکمه
 bot.action("love", async (ctx) => {
   await ctx.answerCbQuery("❤️ ممنون از من استفاده می‌کنید، امیدوارم کمک‌رسان خوبی باشم!", { show_alert: true });
 });
 
-// اجرای سرور
-app.listen(3000, () => {
-  console.log("✅ ربات در حال اجرا است...");
-});
+module.exports = app;
