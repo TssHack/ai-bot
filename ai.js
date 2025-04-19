@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const app = express();
 
 // مقادیر API خود را اینجا وارد کنید
-const botToken = "7000850548:AAEZ1JJfZ6QhNwe8Z9qsrGzd9hHZBp_iIno";
+const botToken = "7000850548:AAH5oF7R6AYdDp5RJCaPiK2-bx5EwygoaG4";
 const adminId = 6856915102;
 
 const bot = new Telegraf(botToken);
